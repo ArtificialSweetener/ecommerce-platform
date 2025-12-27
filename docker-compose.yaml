@@ -1,0 +1,38 @@
+services:
+  postgres-db:
+    image: postgres:18-alpine
+    container_name: ecommerce-db
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  liquibase-migrator:
+    image: liquibase/liquibase:5.0.1
+    container_name: ecommerce-migrator
+    volumes:
+      - ./db/src/main/resources:/liquibase/resources
+    environment:
+      - LIQUIBASE_COMMAND_URL=jdbc:postgresql://postgres-db:5432/${DB_NAME}
+      - LIQUIBASE_COMMAND_USERNAME=${DB_USER}
+      - LIQUIBASE_COMMAND_PASSWORD=${DB_PASS}
+      - LIQUIBASE_COMMAND_CHANGELOG_FILE=liquibase/changelog/db.changelog-master.xml
+      - LIQUIBASE_SEARCH_PATH=/liquibase/resources
+    command: >
+      --classpath=/liquibase/resources/liquibase/changelog/driver/postgresql-42.7.8.jar 
+      update
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
