@@ -11,4 +11,10 @@
                 relativeToChangelogFile="true"/>
     </changeSet>
 
+    <changeSet id="1766840573" author="Anna Hundareva">
+        <sqlFile
+                path="sql/002-add-user-roles-and-status.sql"
+                relativeToChangelogFile="true"/>
+    </changeSet>
+
 </databaseChangeLog>
