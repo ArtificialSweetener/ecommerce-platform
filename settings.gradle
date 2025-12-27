@@ -1,1 +1,4 @@
 rootProject.name = 'ecommerce-platform'
+
+include 'app'
+include 'db'
