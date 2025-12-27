@@ -6,6 +6,8 @@ import com.ecommerce.platform.user.infrastructure.persistance.UserEntity;
 import com.ecommerce.platform.user.infrastructure.persistance.mapper.UserEntityMapper;
 import org.springframework.stereotype.Component;
 
+import java.util.HashSet;
+
 @Component
 public class UserEntityMapperImpl implements UserEntityMapper {
     @Override
@@ -15,6 +17,8 @@ public class UserEntityMapperImpl implements UserEntityMapper {
                 new UserId(entity.getId()),
                 entity.getEmail(),
                 entity.getPassword(),
+                entity.getStatus(),
+                entity.getRoles(),
                 entity.getCreatedAt()
         );
     }
@@ -25,6 +29,8 @@ public class UserEntityMapperImpl implements UserEntityMapper {
                 user.getId().id(),
                 user.getEmail(),
                 user.getPassword(),
+                user.getStatus(),
+                user.getRoles(),
                 user.getCreatedAt()
         );
     }
@@ -33,5 +39,7 @@ public class UserEntityMapperImpl implements UserEntityMapper {
     public void updateEntity(User domain, UserEntity entity) {
         entity.setEmail(domain.getEmail());
         entity.setPassword(domain.getPassword());
+        entity.setStatus(domain.getStatus());
+        entity.setRoles(new HashSet<>(domain.getRoles()));
     }
 }
